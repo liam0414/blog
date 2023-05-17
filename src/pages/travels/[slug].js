@@ -3,7 +3,6 @@ import { GraphQLClient, gql } from "graphql-request";
 import { motion } from "framer-motion";
 
 const graphcms = new GraphQLClient(process.env.ENDPOINT);
-
 const QUERY = gql`
   query Travel($slug: String!) {
     travel(where: { slug: $slug }) {

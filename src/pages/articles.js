@@ -40,7 +40,7 @@ export async function getStaticProps() {
   };
 }
 
-const articles = ({ posts }) => {
+const Articles = ({ posts }) => {
   const [filterTags, setFilterTags] = useState([]);
   const filterPosts = (e) => {
     const filterString = e.currentTarget.textContent;
@@ -109,4 +109,4 @@ const articles = ({ posts }) => {
   );
 };
 
-export default articles;
+export default Articles;
