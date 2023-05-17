@@ -53,7 +53,7 @@ const NavBar = () => {
           ></span>
         </button>
         {isOpen && (
-          <div className="absolute mt-4 z-10 border bg-white divide-y divide-gray-100 w-32 dark:bg-gray-700 dark:divide-gray-600">
+          <div className="absolute mt-4 z-10 border bg-light divide-y divide-gray-100 w-32 dark:bg-gray-700 dark:divide-gray-600">
             <Link
               href="/"
               className="text-gray-700 hover:bg-gray-700 hover:text-white block px-2 py-2 text-base font-medium"
