@@ -1,13 +1,20 @@
-import React, { useRef } from 'react';
-import { motion, useScroll } from 'framer-motion';
-import LiIcon from '@/components/LiIcon';
+import React, { useRef } from "react";
+import { motion, useScroll } from "framer-motion";
+import LiIcon from "../components/LiIcon";
 
 const JobDetails = ({ position, company, time, address, work }) => {
   const ref = useRef(null);
   return (
-    <li ref={ref} className="my-8 first:mt-0 last:mb-0 w-[60%] mx-auto flex flex-col items-start jusitfy-between">
+    <li
+      ref={ref}
+      className="my-8 first:mt-0 last:mb-0 w-[60%] mx-auto flex flex-col items-start jusitfy-between"
+    >
       <LiIcon reference={ref} />
-      <motion.div initial={{ y: 50 }} whileInView={{ y: 0 }} transition={{ duration: 0.5, type: 'spring' }}>
+      <motion.div
+        initial={{ y: 50 }}
+        whileInView={{ y: 0 }}
+        transition={{ duration: 0.5, type: "spring" }}
+      >
         <h3 className="capitalize font-bold text-xl md:text-2xl">
           {position}&nbsp;<div className="text-primary">@{company}</div>
         </h3>
@@ -23,7 +30,7 @@ const Experience = () => {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ['start end', 'center start']
+    offset: ["start end", "center start"],
   });
   return (
     <div className="my-16">
@@ -46,7 +53,12 @@ const Experience = () => {
             time="2022-2023"
             address="Sydney, Australia"
           />
-          <JobDetails position="Techinical Engineer" company="TfNSW" time="2020-2022" address="Sydney, Australia" />
+          <JobDetails
+            position="Techinical Engineer"
+            company="TfNSW"
+            time="2020-2022"
+            address="Sydney, Australia"
+          />
         </ul>
       </div>
     </div>

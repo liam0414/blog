@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { GraphQLClient, gql } from 'graphql-request';
-import { motion } from 'framer-motion';
-import Image from 'next/image';
+import React, { useState } from "react";
+import { GraphQLClient, gql } from "graphql-request";
+import { motion } from "framer-motion";
+
 const graphcms = new GraphQLClient(process.env.ENDPOINT);
 
 const QUERY = gql`
@@ -29,9 +29,9 @@ export async function getStaticPaths() {
   const { travels } = await graphcms.request(SLUGLIST);
   return {
     paths: travels.map((travel) => ({
-      params: { slug: travel.slug }
+      params: { slug: travel.slug },
     })),
-    fallback: false
+    fallback: false,
   };
 }
 
@@ -41,8 +41,8 @@ export async function getStaticProps({ params }) {
   const travel = data.travel;
   return {
     props: {
-      travel
-    }
+      travel,
+    },
   };
 }
 
@@ -56,7 +56,9 @@ const Modal = ({ images, onClose, index }) => {
 
   const handleNext = (event) => {
     event.stopPropagation();
-    setCurrentIndex((prevIndex) => (prevIndex === images.length - 1 ? images.length - 1 : prevIndex + 1));
+    setCurrentIndex((prevIndex) =>
+      prevIndex === images.length - 1 ? images.length - 1 : prevIndex + 1
+    );
   };
 
   return (
@@ -65,24 +67,28 @@ const Modal = ({ images, onClose, index }) => {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.8 }}
       className="fixed flex bg-black bg-opacity-75 justify-center items-center w-full p-4 md:inset-0 h-[calc(100%-1rem)] max-h-full"
-      onClick={onClose}>
+      onClick={onClose}
+    >
       <motion.div
         initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 0 }}
-        className="relative w-full max-w-lg max-h-full">
+        className="relative w-full max-w-lg max-h-full"
+      >
         <div className="relative">
           <button
             className="absolute top-1/2 -left-8 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md opacity-75 hover:opacity-100 focus:opacity-100 transition-opacity"
-            onClick={handlePrev}>
+            onClick={handlePrev}
+          >
             &lt;
           </button>
           <button
             className="absolute top-1/2 -right-8 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md opacity-75 hover:opacity-100 focus:opacity-100 transition-opacity"
-            onClick={handleNext}>
+            onClick={handleNext}
+          >
             &gt;
           </button>
-          <Image src={images[currentIndex].url} alt="focusedImg" className="rounded-xl" />
+          <img src={images[currentIndex].url} alt="focusedImg" className="rounded-xl" />
         </div>
       </motion.div>
     </motion.div>
@@ -113,7 +119,7 @@ const Trip = ({ travel }) => {
           {travel.photo.map((p, index) => {
             return (
               <div className="bg-gray-200 break-inside-avoid " key={index}>
-                <Image
+                <img
                   src={p.url}
                   alt={travel.destination + index}
                   className="rounded-lg hover:cursor-pointer"

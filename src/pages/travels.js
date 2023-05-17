@@ -1,12 +1,12 @@
-import React from 'react';
-import Head from 'next/head';
-import AnimatedText from '@/components/AnimatedText';
-import { GraphQLClient, gql } from 'graphql-request';
-import 'leaflet/dist/leaflet.css';
-import dynamic from 'next/dynamic';
+import React from "react";
+import Head from "next/head";
+import AnimatedText from "../components/AnimatedText";
+import { GraphQLClient, gql } from "graphql-request";
+import "leaflet/dist/leaflet.css";
+import dynamic from "next/dynamic";
 
-const Map = dynamic(() => import('../components/Map'), {
-  ssr: false
+const Map = dynamic(() => import("../components/Map"), {
+  ssr: false,
 });
 
 const limit = 10;
@@ -32,12 +32,12 @@ export async function getStaticProps() {
   const { travels } = await graphcms.request(QUERY);
   return {
     props: {
-      travels
-    }
+      travels,
+    },
   };
 }
 
-const travels = ({ travels }) => {
+const Travels = ({ travels }) => {
   return (
     <>
       <Head>
@@ -52,4 +52,4 @@ const travels = ({ travels }) => {
   );
 };
 
-export default travels;
+export default Travels;

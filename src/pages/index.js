@@ -1,12 +1,12 @@
-import Head from 'next/head';
-import Layout from '@/components/Layout';
-import Link from 'next/link';
-import Image from 'next/image';
-import profilePic from '../../public/images/profile/developer-pic-1.png';
-import AnimatedText from '@/components/AnimatedText';
-import Statistics from '@/components/Statistics';
-import Skills from '@/components/Skills';
-import { LinkArrow } from '@/components/Icons';
+import Head from "next/head";
+import Layout from "../components/Layout";
+import Link from "next/link";
+import Image from "next/image";
+import profilePic from "../../public/images/profile/developer-pic-1.png";
+import AnimatedText from "../components/AnimatedText";
+import Statistics from "../components/Statistics";
+import Skills from "../components/Skills";
+import { LinkArrow } from "../components/Icons";
 export default function Home() {
   return (
     <>
@@ -21,26 +21,32 @@ export default function Home() {
               <Image src={profilePic} alt="Liam" className="w-full h-auto" priority />
             </div>
             <div className="w-full md:w-1/3: flex flex-col items-center self-center">
-              <AnimatedText text="Hi, my name is Liam and I'm a data engineer." className="!text-3xl !text-left" />
+              <AnimatedText
+                text="Hi, my name is Liam and I'm a data engineer."
+                className="!text-3xl !text-left"
+              />
               <p className="my-4 text-base font-medium hidden sm:block">
-                I am a skilled technical professional with understanding of data architecture and infrastructure. My
-                expertise lies in designing, building, maintaining, and optimizing large-scale data processing systems
-                that enable organizations to collect, store, and analyze massive amounts of data.
+                I am a skilled technical professional with understanding of data architecture and
+                infrastructure. My expertise lies in designing, building, maintaining, and
+                optimizing large-scale data processing systems that enable organizations to collect,
+                store, and analyze massive amounts of data.
               </p>
 
               <div className="flex items-center self-start mt-2">
                 <Link
                   href="/resume_liam_chen.pdf"
-                  target={'_blank'}
+                  target={"_blank"}
                   className="flex items-center bg-dark text-light p-2.5 px-6 rounded-lg text-lg font-semibold
                    hover:bg-light hover:text-dark border-2 border-solid border-transparent hover:border-dark"
-                  download={true}>
-                  Resume <LinkArrow className={'w-6 ml-1'} />
+                  download={true}
+                >
+                  Resume <LinkArrow className={"w-6 ml-1"} />
                 </Link>
                 <Link
                   href="mailto:lichen.unsw@gmail.com"
-                  target={'_blank'}
-                  className="ml-4 text-lg font-medium capitalize text-dard underline">
+                  target={"_blank"}
+                  className="ml-4 text-lg font-medium capitalize text-dard underline"
+                >
                   Contact me
                 </Link>
               </div>
