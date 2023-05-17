@@ -76,13 +76,13 @@ const Modal = ({ images, onClose, index }) => {
       >
         <div className="relative">
           <button
-            className="absolute top-1/2 -left-8 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md opacity-75 hover:opacity-100 focus:opacity-100 transition-opacity"
+            className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white rounded-full px-3 py-1 shadow-md opacity-75 hover:opacity-100 focus:opacity-100 transition-opacity"
             onClick={handlePrev}
           >
             &lt;
           </button>
           <button
-            className="absolute top-1/2 -right-8 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md opacity-75 hover:opacity-100 focus:opacity-100 transition-opacity"
+            className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white rounded-full px-3 py-1 shadow-md opacity-75 hover:opacity-100 focus:opacity-100 transition-opacity"
             onClick={handleNext}
           >
             &gt;
@@ -110,7 +110,7 @@ const Trip = ({ travel }) => {
   return (
     <>
       {modal && <Modal images={travel.photo} onClose={closeModal} index={modalImg} />}
-      <div className="px-32">
+      <div className="px-4 md:px-16">
         <h1 className="text-center text-4xl font-bold text-gray-500 py-8">
           {travel.destination.charAt(0).toUpperCase() + travel.destination.slice(1)} - {travel.year}
         </h1>

@@ -36,6 +36,7 @@ const NavBar = () => {
 
       <div>
         <button
+          aria-label="nav-mobile"
           className="flex flex-col justify-center items-center md:hidden"
           onClick={handleClick}
         >
