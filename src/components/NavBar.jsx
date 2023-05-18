@@ -53,7 +53,7 @@ const NavBar = () => {
           ></span>
         </button>
         {isOpen && (
-          <div className="absolute mt-4 z-10 border bg-light divide-y divide-gray-100 w-32 dark:bg-gray-700 dark:divide-gray-600">
+          <div className="absolute mt-4 z-10 border bg-light divide-y divide-gray-100 w-32">
             <Link
               href="/"
               onClick={handleClick}
