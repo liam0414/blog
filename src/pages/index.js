@@ -40,7 +40,7 @@ export default function Home() {
                    hover:bg-light hover:text-dark border-2 border-solid border-transparent hover:border-dark"
                   download={true}
                 >
-                  Resume <LinkArrow className={"w-6 ml-1"} />
+                  Resume <LinkArrow className={"ml-1"} />
                 </Link>
                 <Link
                   href="mailto:lichen.unsw@gmail.com"

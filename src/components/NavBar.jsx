@@ -57,7 +57,7 @@ const NavBar = () => {
             <Link
               href="/"
               onClick={handleClick}
-              className="text-gray-700 hover:bg-gray-700 hover:text-white block px-2 py-2 text-base font-medium"
+              className="text-gray-700 block px-2 py-2 text-base font-medium"
             >
               Home
             </Link>
@@ -66,7 +66,7 @@ const NavBar = () => {
                 key={index}
                 href={"/" + link.toLowerCase()}
                 onClick={handleClick}
-                className="text-gray-700 hover:bg-gray-700 hover:text-white block px-2 py-2 text-base font-medium"
+                className="text-gray-700 block px-2 py-2 text-base font-medium"
               >
                 {link}
               </Link>
