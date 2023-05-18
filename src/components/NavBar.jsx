@@ -56,6 +56,7 @@ const NavBar = () => {
           <div className="absolute mt-4 z-10 border bg-light divide-y divide-gray-100 w-32 dark:bg-gray-700 dark:divide-gray-600">
             <Link
               href="/"
+              onClick={handleClick}
               className="text-gray-700 hover:bg-gray-700 hover:text-white block px-2 py-2 text-base font-medium"
             >
               Home
@@ -63,7 +64,8 @@ const NavBar = () => {
             {links.map((link, index) => (
               <Link
                 key={index}
-                href={link.toLowerCase()}
+                href={"/" + link.toLowerCase()}
+                onClick={handleClick}
                 className="text-gray-700 hover:bg-gray-700 hover:text-white block px-2 py-2 text-base font-medium"
               >
                 {link}

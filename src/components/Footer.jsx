@@ -6,10 +6,10 @@ import { motion } from "framer-motion";
 const Footer = () => {
   return (
     <footer className="w-full font-medium">
-      <Layout className="py-16 flex flex-col items-center text-center space-y-6 bg-dark text-light">
+      <Layout className="py-8 flex flex-col items-center text-center space-y-6 bg-dark text-light">
         <h1 className="text-3xl">SUBSCRIBE</h1>
         <p>Sign up with your email address to receive new content.</p>
-        <div className="max-w-7xl mx-auto py-4 sm:px-6 lg:px-8 text-dark">
+        <div className="w-2/3 mx-auto py-4 sm:px-6 lg:px-8 text-dark">
           <div className="grid grid-cols-1 md:grid-cols-7 gap-2 ">
             <div className="col-span-2">
               <input
