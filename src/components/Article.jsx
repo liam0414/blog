@@ -6,8 +6,8 @@ const Article = ({ post, filterPosts }) => {
 
   return (
     <article className="w-full flex flex-col items-center rounded-3xl border border-solid border-dark bg-card p-4 relative">
-      <Link href={"/articles/" + slug} className="w-full flex justify-center">
-        <img src={coverPhoto.url} alt={title} />
+      <Link href={"/articles/" + slug} className="w-auto flex justify-center ">
+        <img src={coverPhoto.url} alt={title} className="object-contain h-48" />
       </Link>
       <Link href={"/articles/" + slug} className="hover:underline underline-offset-2 h-28">
         <h2 className="m-2 text-left text-lg md:text-2xl lg:text-3xl font-bold hover:text-primary">
