@@ -74,7 +74,7 @@ const Articles = ({ posts }) => {
             <div
               key={index}
               onClick={removeFilter}
-              class="hover:cursor-pointer ml-4 text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 rounded-full bg-white text-gray-700 border"
+              className="hover:cursor-pointer ml-4 text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 rounded-full bg-white text-gray-700 border"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
