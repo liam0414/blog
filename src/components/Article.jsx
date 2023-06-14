@@ -29,7 +29,6 @@ const Article = ({ post, filterPosts }) => {
       <div className="w-3/4 hidden sm:block">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <img src={author.avatar.url} alt="author" className="w-12 h-12 rounded-full" />
             <div className="text-white">{author.name}</div>
           </div>
           <div className="text-white">{createdAt.substring(0, 10)}</div>
