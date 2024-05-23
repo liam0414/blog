@@ -16,7 +16,6 @@ const config: DocsThemeConfig = {
   },
   toc: {
     title: "Table of Contents",
-    backToTop: true,
   },
   editLink: {
     component: null,
