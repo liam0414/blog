@@ -1,17 +1,234 @@
-# Introduction
+# Week 1
 
-asdf
+## Lecture 1
 
-# Introduction
+### A Framework for Machine Learning
 
-asdfasdf
+Given a problem to solve with data
 
-# Introduction
+<ol>
+  <li>1. Select a class of models and a loss function</li>
+  <li>2. Fit a model to training dataset to minimise loss</li>
+  <li>3. Use model to predict for data not in training set</li>
+</ol>
 
-asdfasdf
+### Empirical Risk Minimization (ERM)
 
-# Introduction
+Given a dataset $D = \{(x_1, y_1), \ldots, (x_n, y_n)\}$, we want to find a model $f$ that minimises the loss function $L(f, D)$.
 
-asdfasdf
+### Linear Regression
 
-# Introduction
+$ y = bx + a $
+
+![points](public/images/9417/points.png)
+
+We want to find a linear model that can relate the input $x$ to the output $y$.
+
+### Residual sum of squares (RSS):
+
+$ RSS = \sum_{i=1}^{n} (f(x_i) - \overline y_i)^2 $
+
+**Univariate Linear Regression**
+
+we need to set the partial derivatives of the loss function to zero and solve for the parameters $a$ and $b$.
+
+* $ \frac{\partial RSS}{\partial a} = 0 $
+* $ \frac{\partial RSS}{\partial b} = 0 $
+
+we get the following equations:
+
+* $ a = \overline y - b \overline x $
+* $ b = \frac{\sum_{i=1}^{n} (x_i - \overline x)(y_i - \overline y)}{\sum_{i=1}^{n} (x_i - \overline x)^2} $
+
+#### Linear model training vs prediction
+
+* data has p numeric features, and we need numeric prediction => Regression
+* linear model can be written as $ f(x) = \beta_0 + \beta_1 x_1 + \ldots + \beta_p x_p $
+* **Predicted** value for first training instance x is:
+    $ \hat y = \beta_0 + \beta_1 x_{1} + \ldots + \beta_p x_{p} $
+* p + 1 weights or coefficients must be learned from the training data
+
+#### Mean Squared Error (MSE)
+
+$ MSE = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat y_i)^2 $
+
+Also known as "Orinary Least Squares" (OLS) or "Linear Least Squares"
+
+#### Multivariate Linear Regression
+
+Given 2 real-valued features $x_1$ and $x_2$, we can fit a plane to the data. To generalise to p features, we can fit a hyperplane.
+For more than 2 features, we can't visualise the data, but the concept is the same.
+
+## Lecture 2
+
+### Vectors
+
+A number, is a scalar. Numbers can be grouped into a vector. For example, $ \begin{bmatrix} 1 \\ 2 \\ 3 \end{bmatrix} $ is a column vector
+
+The same vector can be written "inline", sometimes as (1, 2, 3) or as a row vector $ \begin{bmatrix} 1 & 2 & 3 \end{bmatrix} ^ T $ where T is the transpose.
+
+#### Vector Operations
+
+* Addition: $ \begin{bmatrix} 1 \\ 2 \\ 3 \end{bmatrix} + \begin{bmatrix} 4 \\ 5 \\ 6 \end{bmatrix} = \begin{bmatrix} 5 \\ 7 \\ 9 \end{bmatrix} $
+* Subtraction: $ \begin{bmatrix} 1 \\ 2 \\ 3 \end{bmatrix} - \begin{bmatrix} 4 \\ 5 \\ 6 \end{bmatrix} = \begin{bmatrix} -3 \\ -3 \\ -3 \end{bmatrix} $
+* Scalar multiplication: $ 2 \begin{bmatrix} 1 \\ 2 \\ 3 \end{bmatrix} = \begin{bmatrix} 2 \\ 4 \\ 6 \end{bmatrix} $
+
+#### Systems of linear equations
+
+An approach to modelling to find the best fit line to a set of points is to solve a system of linear equations.
+
+## Tutorial: Regression I
+
+### Question 1. (Univariate Least Squares)
+
+**a) Derive the least-squares estimates (minimizers of the MSE loss function) for the univariate linear regression model.**
+
+The loss function is the Mean Squared Error (MSE):
+
+$ MSE = \frac{1}{n} \sum_{i=1}^{n} (\hat y_i - (w_0 + w_1 x_i))^2 $
+
+To find the minimisers of the loss function, we need to set the partial derivatives to zero and solve for the parameters $w_0$ and $w_1$.
+
+compute the partial derivatives of the loss function with respect to $w_0$ and $w_1$:
+
+* $ \frac{\partial MSE}{\partial w_0} = \frac{\partial MSE}{\partial u} \frac{\partial u}{\partial w_0} $
+* $ \frac{\partial MSE}{\partial w_1} = \frac{\partial MSE}{\partial u} \frac{\partial u}{\partial w_1} $
+
+where $ u = \hat y_i - (w_0 + w_1 x_i) $
+
+$ \frac{\partial MSE}{\partial u} = \frac{2}{n} \sum_{i=1}^{n} u $
+
+* $ \frac{\partial u}{\partial w_0} = -1 $
+* $ \frac{\partial u}{\partial w_1} = -x_i $
+
+Therefore the partial derivatives are:
+
+* $ \frac{\partial MSE}{\partial w_0} = -\frac{2}{n} \sum_{i=1}^{n} (\hat y_i - (w_0 + w_1 x_i)) $
+* $ \frac{\partial MSE}{\partial w_1} = -\frac{2}{n} \sum_{i=1}^{n} (\hat y_i - (w_0 + w_1 x_i)) x_i $
+
+Setting the partial derivatives to zero:
+
+* $ \frac{\partial MSE}{\partial w_0} = 0 $
+
+$ \rightarrow -\frac{2}{n} \sum_{i=1}^{n} (\hat y_i - (w_0 + w_1 x_i)) = 0 $
+
+$ \rightarrow \overline y - (w_0 + w_1 \overline x) = 0 $
+
+$ \rightarrow w_0 = \overline y - w_1 \overline x $
+
+* $ \frac{\partial MSE}{\partial w_1} = 0 $
+
+$ \rightarrow -\frac{2}{n} \sum_{i=1}^{n} (\hat y_i - (w_0 + w_1 x_i)) x_i = 0 $
+
+$ \rightarrow \overline x \overline y - w_0 \overline x - w_1 \overline x^2 = 0 $
+
+$ \rightarrow \overline x \overline y - \overline x \ \overline y + w_1\overline {x}^2 - w_1 \overline{x^2} = 0 $
+
+$ \rightarrow w_1 = \frac{\overline x \overline y - \overline x \ \overline y}{\overline{x^2} - \overline {x}^2} $
+
+**b) Show that the centroid of the data, i.e. the point $(\overline x, \overline y)$. is always on the least squares regression line.**
+
+Assume the centroid of the data is the point $(\overline x, \overline y)$.
+
+Substitute $x = \overline x$ and $y = \overline y$ into the equation of the regression line:
+
+$ y = w_0 + w_1 x \rightarrow \overline y = w_0 + w_1 \overline x \rightarrow \overline y = \overline y - w_1 \overline x + w_1 \overline x $
+
+Finally, $ \overline y = \overline y $. Therefore, the centroid of the data is always on the least squares regression line.
+
+**c) try to solve the following loss function for linear regression with a version of “L2” regularization, in which we add a penalty that penalizes the size of w1**
+
+The loss function is the Mean Squared Error (MSE) with L2 regularization:
+
+$ MSE = \frac{1}{n} \sum_{i=1}^{n} (y_i - (w_0 + w_1 x_i))^2 + \lambda w_1^2 $
+
+To find the minimisers of the loss function, we need to set the partial derivatives to zero and solve for the parameters $w_0$ and $w_1$.
+
+* $ \frac{\partial MSE}{\partial w_0} = 0 $
+* $ \frac{\partial MSE}{\partial w_1} = 0 $
+
+compute the partial derivatives of the loss function with respect to $w_0$ and $w_1$:
+
+* $ \frac{\partial MSE}{\partial w_0} = \frac{\partial MSE}{\partial u} \frac{\partial u}{\partial w_0} $
+* $ \frac{\partial MSE}{\partial w_1} = \frac{\partial MSE}{\partial u} \frac{\partial u}{\partial w_1} $
+
+where $ u = y_i - (w_0 + w_1 x_i) $
+
+$ \frac{\partial MSE}{\partial u} = \frac{2}{n} \sum_{i=1}^{n} u $
+
+* $ \frac{\partial u}{\partial w_0} = -1 $
+* $ \frac{\partial u}{\partial w_1} = -x_i $
+
+Therefore the partial derivatives are:
+
+* $ \frac{\partial MSE}{\partial w_0} = -\frac{2}{n} \sum_{i=1}^{n} (y_i - (w_0 + w_1 x_i)) $
+* $ \frac{\partial MSE}{\partial w_1} = -\frac{2}{n} \sum_{i=1}^{n} (y_i - (w_0 + w_1 x_i)) x_i + 2 \lambda w_1 $
+
+Setting the partial derivatives to zero:
+
+* $ \frac{\partial MSE}{\partial w_0} = 0 $
+
+$ \rightarrow -\frac{2}{n} \sum_{i=1}^{n} (y_i - (w_0 + w_1 x_i)) = 0 $
+
+$ \rightarrow \overline y - (w_0 + w_1 \overline x) = 0 $
+
+$ \rightarrow w_0 = \overline y - w_1 \overline x $
+
+* $ \frac{\partial MSE}{\partial w_1} = 0 $
+
+$ \rightarrow -\frac{2}{n} \sum_{i=1}^{n} (y_i - (w_0 + w_1 x_i)) x_i + 2 \lambda w_1 = 0 $
+
+$ \rightarrow \overline x \overline y - w_0 \overline x - w_1 \overline x^2 - \lambda w_1 = 0 $
+
+$ \rightarrow \overline x \overline y - \overline x \ \overline y + w_1\overline {x}^2 - w_1 \overline{x^2} - \lambda w_1 = 0 $
+
+$ \rightarrow w_1 = \frac{\overline x \overline y - \overline x \ \overline y}{\overline{x^2} - \overline {x}^2 + \lambda} $
+
+### Question 2. (Multivariate Least Squares)
+
+We now generalise this for the case when we have p features. Let x1; x2; : : : ; xn be n feature vectors (e.g.
+corresponding to n instances) in $ R^p $, that is:
+
+$ x_i = \begin{bmatrix} x_{i0} \\ x_{i1} \\ \vdots \\ x_{ip-1} \end{bmatrix} $
+
+We stack these feature vectors into a single matrix X: $ X = \begin{bmatrix} x_1^T \\ x_2^T \\ \vdots \\ x_n^T \end{bmatrix} $ = $ \begin{bmatrix} x_{10} & x_{11} & \ldots & x_{1p-1} \\ x_{20} & x_{21} & \ldots & x_{2p-1} \\ \vdots & \vdots & \ddots & \vdots \\ x_{n0} & x_{n1} & \ldots & x_{np-1} \end{bmatrix} $
+where $ x_i^T $ is the transpose of $ x_i $. Note that it is standard to take the first element of the feature vectors to be 1 to account for the bias term, so we will assume
+that $ x_{i0} = 1 $ for all i. Analagously to the previous question, the goal is to learn a weight vector w in $ R^p $ and make predictions using the model 
+$ \hat y_i = w^T x_i $ for each instance i. where $ y_i $ is the i-th predicted value. To solve for the optimal weights in w, we can use the same
+procedure as before and use the MSE: $ MSE = \frac{1}{n} \sum_{i=1}^{n} (y_i - w^T x_i)^2 $ One approach to solve this would be to take derivatives with respect to each of the p weights and
+solve the resulting equations, but this would be extremely tedious. The more efficient way to solve this
+problem is to appeal to matrix notation. We can write the above loss as:
+
+$ MSE = \frac{1}{n} ||y - Xw||_2^2 $ where $ || * ||_2 $ is the Euclidean norm
+
+**a) Show that $ L(w) $ has a critical point at $ w = (X^T X)^{-1} X^T y $.** 
+
+To find the critical point of the loss function, we need to find the derivative of the loss function with respect to $ w $ and set it to zero.
+
+$ \frac{\partial MSE}{\partial w} = 0 $
+
+$ \rightarrow \frac{\partial}{\partial w} \frac{1}{n} ||y - Xw||_2^2 = 0 $
+
+$ \rightarrow \frac{\partial}{\partial w} \frac{1}{n} (y - Xw)^T (y - Xw) = 0 $
+
+$ \rightarrow \frac{\partial}{\partial w} \frac{1}{n} (y^T y - y^T Xw - w^T X^T y + w^T X^T Xw) = 0 $
+
+$ \rightarrow \frac{\partial}{\partial w} \frac{1}{n} (y^T y - 2y^T Xw + w^T X^T Xw) = 0 $
+
+calculate the derivative with respect to $ w $:
+
+$ \frac{\partial}{\partial w} \frac{1}{n} (y^T y - 2y^T Xw + w^T X^T Xw) = 0 $ 
+
+$ \rightarrow \frac{1}{n} (-2X^T y + 2X^T Xw) = 0 $ 
+
+because if c is a constant, $ \frac{\partial}{\partial x} c^Tx = c $
+and $ \frac{\partial}{\partial x} x^TAx = 2Ax $ for a symmetric matrix A, using the property for a symmetric matrix A, we can solve for the critical point:
+
+$ \rightarrow -X^T y + X^T Xw = 0 $
+
+$ \rightarrow X^T Xw = X^T y $
+
+$ \rightarrow w = (X^T X)^{-1} X^T y $
+
+
+
