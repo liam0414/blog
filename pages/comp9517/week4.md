@@ -516,12 +516,12 @@ C. The simple kNN classifier needs homogeneous feature types and scales so that 
 D. SVM is a powerful classifier that can separate classes even when the feature
 space exhibits significant overlaps between classes.
 
-    The answer is C. The simple kNN classifier needs homogeneous feature types and scales so that the classification performance can be better.
+The answer is C. The simple kNN classifier needs homogeneous feature types and scales so that the classification performance can be better.
 
-    This is because kNN (k-Nearest Neighbors) relies on calculating distances between data points, and having features with different types or scales can lead to misleading distance calculations, affecting the classification performance.
+This is because kNN (k-Nearest Neighbors) relies on calculating distances between data points, and having features with different types or scales can lead to misleading distance calculations, affecting the classification performance.
 
-    A. Pattern recognition is not solely defined by the process of model training on a training dataset and then testing on an independent test set. While this is a common approach in evaluating models, pattern recognition encompasses a broader set of techniques and processes for identifying patterns in data.
+A. Pattern recognition is not solely defined by the process of model training on a training dataset and then testing on an independent test set. While this is a common approach in evaluating models, pattern recognition encompasses a broader set of techniques and processes for identifying patterns in data.
 
-    B. The dimension of feature vectors being smaller than the number of training samples can help in some cases, but it is not a strict rule to avoid overfitting. Overfitting can also be managed through techniques such as regularization, cross-validation, and using more sophisticated models.
+B. The dimension of feature vectors being smaller than the number of training samples can help in some cases, but it is not a strict rule to avoid overfitting. Overfitting can also be managed through techniques such as regularization, cross-validation, and using more sophisticated models.
 
-    D. SVM (Support Vector Machine) is powerful but generally works best when classes are linearly separable or can be made linearly separable in a higher-dimensional space through the kernel trick. When there is significant overlap in the feature space, SVM might struggle unless the overlap is manageable through the choice of an appropriate kernel.
+D. SVM (Support Vector Machine) is powerful but generally works best when classes are linearly separable or can be made linearly separable in a higher-dimensional space through the kernel trick. When there is significant overlap in the feature space, SVM might struggle unless the overlap is manageable through the choice of an appropriate kernel.
