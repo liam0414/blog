@@ -1,0 +1,271 @@
+import MyAlert from "../../components/MyAlert";
+
+# Week 1: Introduction to Hadoop, HDFS, and YARN
+
+## The Big Data Challenge: Word Counting Example
+
+Let's start with a practical example to understand the challenges of big data processing:
+
+### Word Counting in Textual Data
+
+- **Input**: A data set containing several documents
+- **Task**: Count the frequency of words appearing in the data set
+- **Simple solution**:
+  1. Initialize a dictionary (or a map structure) to store the results
+  2. For each file, use a file reader to get the texts line by line
+  3. Tokenize each line into words
+  4. For each word, increase its count in the dictionary
+
+<MyAlert severity="warning" title="Problem">
+  What if the data set is too large to be stored on a single machine? Solution: Split the data
+  across multiple machines > Process each part in parallel (Map phase) > Combine the results (Reduce
+  phase)
+</MyAlert>
+
+### Distributed Word Count
+
+To handle large datasets, we need to distribute the processing:
+
+![wordcount](public/images/9313/wordcount.png)
+_Figure 1: Distributed Word Count Process_
+
+#### Challenges in Distributed Processing:
+
+- Where to store the huge textual data set?
+- How to split the data set into different blocks?
+  - How many blocks?
+  - What should be the size of each block?
+- How to handle node failures or data loss?
+- How to manage network connectivity issues?
+
+<MyAlert severity="info" title="Key Challenges">
+  Distributed processing introduces complexities beyond just splitting the task. It requires careful
+  consideration of data storage, task allocation, fault tolerance, and result aggregation.
+</MyAlert>
+
+### Complexities of Distributed Processing
+
+- Task assignment: How to efficiently assign tasks to different workers?
+- Fault tolerance: What happens if tasks fail?
+- Result aggregation: How do workers exchange and combine results?
+- Synchronization: How to coordinate distributed tasks across different workers?
+
+### Big Data Storage Challenges
+
+- Massive data volumes: Even a single document might not fit on one machine
+- Reliability: Storing petabytes (PBs) of data reliably is challenging
+- Failure handling: Need to manage various types of failures (Disk/Hardware/Network)
+- Increased failure probability: More machines mean higher chances of component failures
+
+## Part 1. Introduction to Hadoop
+
+<MyAlert severity="success" title="What is Hadoop">
+  Hadoop is an open-source data storage and processing platform designed to solve big data
+  challenges through distributed computing.
+</MyAlert>
+
+### 1 Key Features of Hadoop:
+
+- Massively scalable and automatically parallelizable
+- Based on work from Google:
+  - Google: GFS (Google File System) + MapReduce + BigTable (Not open-source)
+  - Hadoop: HDFS (Hadoop Distributed File System) + Hadoop MapReduce + HBase (open-source)
+- Named by Doug Cutting in 2006 (while working at Yahoo!), after his son's toy elephant
+
+### 2. What Hadoop Offers:
+
+1. Redundant, Fault-tolerant data storage
+2. Parallel computation framework
+3. Job coordination
+
+<MyAlert severity="info" title="Programmer Benefits">
+  Hadoop abstracts away many complexities, allowing programmers to focus on data processing logic
+  without worrying about: - File location management - Handling failures and data loss - Dividing
+  computation - Scaling programs
+</MyAlert>
+
+### 3. Why Use Hadoop?
+
+1. **Cheaper**: Scales to Petabytes or more easily using commodity hardware
+2. **Faster**: Enables parallel data processing
+3. **Better**: Suited for particular types of big data problems
+
+### 4. Hadoop Versions Evolution
+
+#### Hadoop 1.x
+
+- **Data storage (HDFS)**:
+  - Runs on commodity hardware (usually Linux)
+  - Horizontally scalable
+- **Processing (MapReduce)**:
+  - Parallelized (scalable) processing
+  - Fault Tolerant
+- **Other Tools/Frameworks**: HBase, Hive, etc.
+
+#### Hadoop 2.x
+
+Introduced YARN (Yet Another Resource Negotiator):
+
+- A resource-management platform responsible for managing computing resources in clusters
+- Enables a Multi-Purpose Platform supporting Batch, Interactive, Online, and Streaming applications
+
+#### Hadoop 3.x
+
+Key improvements in Hadoop 3.x:
+
+- Minimum Java version: Java 8/11 (up from Java 7)
+- Storage Scheme: Introduced Erasure encoding in HDFS
+- Fault Tolerance: Erasure coding for more efficient fault tolerance
+- Storage Overhead: Reduced from 200% to about 50%
+- Scalability: Improved to support more than 10,000 nodes in a cluster
+- NameNodes: Support for multiple standby NameNodes
+
+### 2.5. Hadoop Ecosystem
+
+The Hadoop ecosystem is a combination of technologies that work together to solve big data problems:
+
+![hadoop ecosystem](public/images/9313/hadoopeco.png)
+_Figure 2: The Hadoop Ecosystem_
+
+## Part 2: HDFS (Hadoop Distributed File System)
+
+### 1. Introduction to File Systems
+
+A file system defines the methods and data structures that an operating system uses to keep track of files on a disk or partition.
+
+### 2. Latency and Throughput
+
+Understanding these concepts is crucial for HDFS design:
+
+- **Latency**: Time required to perform an action or produce a result
+
+  - Measured in time units (e.g., seconds, milliseconds)
+  - Example: I/O latency is the time to complete a single I/O operation
+
+- **Throughput**: Number of actions executed or results produced per unit of time
+  - Measured in units produced per time unit
+  - Example: Disk throughput is the maximum rate of sequential data transfer (e.g., MB/sec)
+
+### 3. HDFS: The Hadoop Distributed File System
+
+HDFS solves the data movement problem with a simple principle:
+
+<MyAlert severity="success" title="HDFS Principle">
+  Don't move data to workers... move workers to the data! - Store data on the local disks of nodes
+  in the cluster - Start up the workers on the node that has the data locally
+</MyAlert>
+
+#### Why This Approach?
+
+- Not enough RAM to hold all data in memory
+- Disk access is slow (high latency), but disk throughput is reasonable
+
+#### HDFS Design Goals:
+
+1. Handle very large datasets (10K nodes, 100 million files, 10PB)
+2. Streaming data access (optimized for batch processing, high throughput)
+3. Simple coherency model (write-once-read-many)
+4. "Moving computation is cheaper than moving data"
+5. Portability across heterogeneous hardware and software platforms
+6. Fault tolerance on commodity hardware
+
+<MyAlert severity="info" title="HDFS Limitations">
+  HDFS is not ideal for: 1. Low-latency data access (use HBase for such needs) 2. Lots of small
+  files (NameNodes hold metadata in memory)
+</MyAlert>
+
+### 4. HDFS Architecture
+
+![hdfs architecture](public/images/9313/hdfs.png)
+_Figure 3: HDFS Architecture_
+
+Key components:
+
+1. **NameNode**:
+
+   - Manages the file system namespace
+   - Regulates access to files by clients
+   - Executes file system operations
+
+2. **DataNodes**:
+
+   - Store and retrieve blocks
+   - Report back to the NameNode
+
+3. **Secondary NameNode**:
+   - Performs periodic checkpoints of the namespace
+   - Helps NameNode to restart faster
+
+![namenode and datanode](public/images/9313/namenode.png)
+_Figure 4: Communication between NameNode and DataDode_
+
+### 5. HDFS Data Replication
+
+- HDFS replicates file blocks for fault tolerance
+- The NameNode makes all decisions regarding replication
+- Default replication factor is 3 (configurable)
+
+### 6. HDFS Read and Write Operations
+
+![read_dataflow](public/images/9313/read_dataflow.png)
+_Figure 5: File Read Data Flow in HDFS_
+
+![write_dataflow](public/images/9313/write_dataflow.png)
+_Figure 5: File Write Data Flow in HDFS_
+
+### 7. HDFS Fault Tolerance
+
+HDFS is designed with the assumption that failure is the norm, not the exception:
+
+- DataNode failures are detected through missed heartbeats
+- The NameNode initiates block re-replication when necessary
+- The system can tolerate and recover from various types of failures
+
+<MyAlert severity="success" title="HDFS Erasure Coding">
+  Hadoop 3.x introduced Erasure Coding as an alternative to replication: - Provides similar fault
+  tolerance with less storage overhead - Reduces storage overhead from 200% to about 50% -
+  Transforms data into a format where a subset can recover the whole
+</MyAlert>
+
+## Part 3: YARN (Yet Another Resource Negotiator)
+
+### 1. Why YARN?
+
+In Hadoop 1.x, MapReduce handled both processing and resource management. This led to limitations in scalability and flexibility.
+
+### 2. Introduction to YARN
+
+<MyAlert severity="info" title="YARN Definition">
+  YARN (Yet Another Resource Negotiator) is the resource management and job scheduling technology in
+  Hadoop, introduced in version 2.x.
+</MyAlert>
+
+Key motivations for YARN:
+
+1. Flexibility: Enable data processing models beyond MapReduce
+2. Efficiency: Improve performance and Quality of Service
+3. Resource Sharing: Support multiple workloads in the same cluster
+
+### 3. YARN Components:
+
+1. **ResourceManager**: Arbitrates resources among all applications
+2. **NodeManager**: Per-node agent managing containers and reporting resource usage
+3. **ApplicationMaster**: Per-application component negotiating resources and working with NodeManagers
+4. **Container**: Unit of allocation for resources (CPU, memory, disk, network)
+
+### 4. YARN Application Workflow
+
+1. Client submits an application
+2. ResourceManager allocates a container for the ApplicationMaster
+3. ApplicationMaster registers with ResourceManager
+4. ApplicationMaster negotiates resources
+5. ApplicationMaster launches containers on NodeManagers
+6. Application code executes in containers
+7. Client communicates with ApplicationMaster for status updates
+8. ApplicationMaster unregisters and shuts down upon completion
+
+<MyAlert severity="success" title="YARN Benefits">
+  YARN enables Hadoop to support a wide variety of data processing approaches, including: - Batch
+  processing (MapReduce) - Interactive processing (Hive on Tez) - In-memory processing (Spark) -
+  Stream processing (Storm, Flink) - Graph processing (Giraph)
+</MyAlert>

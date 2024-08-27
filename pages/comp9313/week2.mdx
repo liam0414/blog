@@ -1,0 +1,470 @@
+import MyAlert from "../../components/MyAlert";
+import { MyTabs, TabPanel, Tab } from "../../components/MyTabs";
+import CodeBlock from "../../components/CodeBlock";
+import { Typography } from "@mui/material";
+
+# Week 2 MapReduce
+
+## 1. Introduction to MapReduce
+
+MapReduce is a programming model and an associated implementation for processing and generating large datasets. It was originally developed by Google and has since become a fundamental part of many big data processing frameworks, including Apache Hadoop.
+
+<MyAlert severity="info" title="Key Concept">
+  MapReduce allows programmers to focus on the data processing logic while the framework handles the
+  complexities of distributed computing, such as data distribution, parallel processing, and fault
+  tolerance.
+</MyAlert>
+
+## 2. The MapReduce Paradigm
+
+The MapReduce paradigm consists of two main phases:
+
+1. **Map**: This phase takes input data and produces a set of intermediate key/value pairs.
+2. **Reduce**: This phase merges all intermediate values associated with the same intermediate key.
+
+<MyTabs>
+  <Tab label="Map Phase" />
+  <Tab label="Reduce Phase" />
+
+{" "}
+
+<TabPanel>
+  <Typography variant="h6" component="div">
+    Map Phase
+  </Typography>
+  <Typography component="div">
+    In the Map phase, the input data is divided into smaller chunks, and each chunk is processed
+    independently. The Map function emits intermediate key-value pairs.
+  </Typography>
+  <pre>{`map(key1, value1) → list(key2, value2)`}</pre>
+</TabPanel>
+
+  <TabPanel>
+    <Typography variant="h6" component="div">
+      Reduce Phase
+    </Typography>
+    <Typography component="div">
+      In the Reduce phase, all the values associated with the same key are aggregated. The Reduce
+      function processes these grouped values and produces the final output.
+    </Typography>
+    <pre>{`reduce(key2, list(value2)) → list(key3, value3)`}</pre>
+  </TabPanel>
+</MyTabs>
+
+## 3. MapReduce Workflow
+
+The MapReduce framework manages the entire process of distributing tasks, handling failures, and aggregating results. Here's a high-level overview of the workflow:
+
+1. Input data is split into chunks
+2. Map tasks process input chunks in parallel
+3. Map output is partitioned and sorted
+4. Reduce tasks process partitioned data
+5. Final output is written to the distributed file system
+
+<MyAlert severity="success" title="Advantage">
+  This workflow allows MapReduce to process massive datasets efficiently by distributing the
+  workload across a cluster of machines.
+</MyAlert>
+
+## 4. Implementing MapReduce
+
+There are several ways to implement MapReduce jobs. Let's look at three common approaches:
+
+<MyTabs>
+  <Tab label="Hadoop Java API" />
+  <Tab label="Hadoop Streaming" />
+  <Tab label="MRJob (Python)" />
+  <TabPanel>
+    <Typography variant="h6" component="div">Hadoop Java API</Typography>
+    <Typography component="div">
+      This is the native way to write MapReduce jobs in Hadoop. It offers the most control and best performance but requires more boilerplate code.
+    </Typography>
+    <CodeBlock>
+    {`
+    import org.apache.hadoop.conf.Configured;
+    import org.apache.hadoop.util.Tool;
+    import org.apache.hadoop.util.ToolRunner;
+    import org.apache.hadoop.fs.Path;
+    import org.apache.hadoop.io.IntWritable;
+    import org.apache.hadoop.io.Text;
+    import org.apache.hadoop.mapreduce.Job;
+    import org.apache.hadoop.mapreduce.Mapper;
+    import org.apache.hadoop.mapreduce.Reducer;
+    import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+    import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+    import java.io.IOException;
+    import java.util.StringTokenizer;
+
+    public class WordCount extends Configured implements Tool {
+        // Mapper class
+        public static class TokenizerMapper extends Mapper<Object, Text, Text, IntWritable> {
+            private final static IntWritable one = new IntWritable(1);
+            private Text word = new Text();
+            // The map method processes each line of input, splits it into words, and emits a word count of 1 for each word.
+            public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
+                StringTokenizer itr = new StringTokenizer(value.toString());
+                while (itr.hasMoreTokens()) {
+                    word.set(itr.nextToken());
+                    context.write(word, one);
+                }
+            }
+        }
+
+        // Reducer class
+        public static class IntSumReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
+            private IntWritable result = new IntWritable();
+            // The reduce method receives a list of all the values associated with a given key and sums them up.
+            public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
+                int sum = 0;
+                for (IntWritable val : values) {
+                    sum += val.get();
+                }
+                result.set(sum);
+                context.write(key, result);
+            }
+        }
+
+        // Main method and run configurations
+    }
+
+`}
+
+</CodeBlock>
+</TabPanel>
+  <TabPanel>
+    <Typography variant="h6" component="div">Hadoop Streaming</Typography>
+    <Typography component="div">
+      Hadoop Streaming allows you to write MapReduce jobs in any language that can read from stdin and write to stdout. Here's a Python example:
+    </Typography>
+    <CodeBlock>
+      {`
+      # mapper.py
+      #!/usr/bin/env python
+      import sys
+      for line in sys.stdin:
+          words = line.strip().split()
+      for word in words:
+          print('%s\t%s' % (word, "1"))
+
+      # reducer.py
+      #!/usr/bin/env python
+      import sys
+      current_word = None
+      current_count = 0
+      word = None
+
+      for line in sys.stdin:
+          word, count = line.strip().split('\t', 1)
+          try:
+              count = int(count)
+          except ValueError:
+              continue
+          if current_word == word:
+              current_count += count
+          else:
+              if current_word:
+                  print('%s\t%s' % (current_word, current_count))
+              current_word = word
+              current_count = count
+      if current_word == word:
+          print('%s\t%s' % (current_word, current_count))
+
+`}
+
+</CodeBlock>
+</TabPanel>
+  <TabPanel>
+    <Typography variant="h6" component="div">MRJob (Python)</Typography>
+    <Typography component="div">
+      MRJob is a Python library that makes it easy to write MapReduce jobs. It can run jobs locally or on Hadoop clusters.
+    </Typography>
+    <CodeBlock>
+      {`
+    from mrjob.job import MRJob
+    import re
+
+    WORD_RE = re.compile(r"[\w']+")
+    class MRWordFreqCount(MRJOB):
+    def mapper(self, _, line):
+        for word in WORD_RE.findall(line):
+            yield (word.lower(), 1)
+
+    def combiner(self, word, counts):
+        yield (word, sum(counts))
+
+    def reducer(self, word, counts):
+        yield (word, sum(counts))
+    if name == '__main__':
+        WordCount.run()
+
+`}
+
+</CodeBlock>
+</TabPanel>
+</MyTabs>
+
+![mapreduce](public/images/9313/mapreduce.png)
+_Figure 1: MapReduce Data Flow_
+
+## 5. Advanced MapReduce Concepts
+
+### 5.1 Combiners
+
+Combiners are "mini-reducers" that run on the map output. They can significantly reduce the amount of data transferred between the map and reduce phases.
+
+<MyAlert severity="info" title="Combiner Usage">
+  Combiners are optional and should be used when the reduce function is commutative and associative.
+  They have the same interface as reducers but must output the same key-value types as the mapper.
+</MyAlert>
+
+### 5.2 Partitioners
+
+Partitioners determine how the map output is divided among the reducers. The default partitioner uses a hash of the key modulo the number of reducers.
+
+### 5.3 Design Patterns
+
+Two common design patterns in MapReduce are:
+
+1. **In-Mapper Combining**: This pattern preserves state across multiple map calls to perform local aggregation.
+
+This example demonstrates different approaches to computing the mean using MapReduce, highlighting the challenges and improvements made in each version.
+
+<MyTabs>
+  <Tab label="Version 1" />
+  <Tab label="Version 2" />
+  <Tab label="Version 3" />
+  <Tab label="Version 4" />
+
+  <TabPanel>
+    <Typography variant="h6" component="div">Computing the Mean: Version 1</Typography>
+    <CodeBlock>
+    {`
+    class MAPPER
+        method MAP(string t, integer r)
+            EMIT(string t, integer r)
+
+    class REDUCER
+        method REDUCE(string t, integers [r1, r2, ...])
+            sum ← 0
+            cnt ← 0
+            for all integer r ∈ integers [r1, r2, ...] do
+                sum ← sum + r
+                cnt ← cnt + 1
+            ravg ← sum/cnt
+            EMIT(string t, integer ravg)
+
+`}
+
+</CodeBlock>
+<MyAlert severity="warning" title="Problem">
+Why can't we use reducer as combiner?
+Mean(1, 2, 3, 4, 5) != Mean(Mean(1, 2), Mean(3, 4, 5))
+</MyAlert>
+  </TabPanel>
+  <TabPanel>
+    <Typography variant="h6" component="div">Computing the Mean: Version 2</Typography>
+    <CodeBlock>
+      {`
+      class MAPPER
+          method MAP(string t, integer r)
+              EMIT(string t, integer r)
+
+      class COMBINER
+          method COMBINE(string t, integers [r1, r2, ...])
+              sum ← 0
+              cnt ← 0
+              for all integer r ∈ integers [r1, r2, ...] do
+                  sum ← sum + r
+                  cnt ← cnt + 1
+              EMIT(string t, pair (sum, cnt)) ▷ Separate sum and count
+
+      class REDUCER
+          method REDUCE(string t, pairs [(s1, c1), (s2, c2) ...])
+              sum ← 0
+              cnt ← 0
+              for all pair (s, c) ∈ pairs [(s1, c1), (s2, c2) ...] do
+                  sum ← sum + s
+                  cnt ← cnt + c
+              ravg ← sum/cnt
+              EMIT(string t, integer ravg)
+
+`}
+
+</CodeBlock>
+<MyAlert severity="error" title="Issue">
+Why doesn't this work? Combiners must have the same input and output type, consistent with the input of reducers (output of mappers)
+</MyAlert>
+
+  </TabPanel>
+
+  <TabPanel>
+    <Typography variant="h6" component="div">Computing the Mean: Version 3</Typography>
+    <CodeBlock>
+    {`
+      class MAPPER
+          method MAP(string t, integer r)
+              EMIT(string t, pair (r, 1))
+
+      class COMBINER
+          method COMBINE(string t, pairs [(s1, c1), (s2, c2) ...])
+              sum ← 0
+              cnt ← 0
+              for all pair (s, c) ∈ pairs [(s1, c1), (s2, c2) ...] do
+                  sum ← sum + s
+                  cnt ← cnt + c
+              EMIT(string t, pair (sum, cnt))
+
+      class REDUCER
+          method REDUCE(string t, pairs [(s1, c1), (s2, c2) ...])
+              sum ← 0
+              cnt ← 0
+              for all pair (s, c) ∈ pairs [(s1, c1), (s2, c2) ...] do
+                  sum ← sum + s
+                  cnt ← cnt + c
+              ravg ← sum/cnt
+              EMIT(string t, pair (ravg, cnt))
+
+`}
+
+</CodeBlock>
+<MyAlert severity="success" title="Improvement">
+Fixed? Check the correctness by removing the combiner
+</MyAlert>
+
+  </TabPanel>
+
+  <TabPanel>
+    <Typography variant="h6" component="div">Computing the Mean: Version 4 (In-Mapper Combining)</Typography>
+    <CodeBlock>
+      {`
+      class MAPPER
+          method INITIALIZE
+              S ← new AssociativeArray
+              C ← new AssociativeArray
+          method MAP(string t, integer r)
+              S{t} ← S{t} + r
+              C{t} ← C{t} + 1
+          method CLOSE
+              for all term t ∈ S do
+                  EMIT(term t, pair (S{t}, C{t}))
+      `}
+    </CodeBlock>
+    <MyAlert severity="info" title="Optimization">
+      This version uses in-mapper combining to reduce the amount of intermediate data, potentially improving performance.
+    </MyAlert>
+  </TabPanel>
+</MyTabs>
+
+**Explanation**
+
+- Version 1: Simple implementation, but can't use reducer as combiner due to the non-associative nature of mean calculation.
+- Version 2: Attempts to separate sum and count, but fails because combiner output doesn't match mapper output.
+- Version 3: Correctly implements combiner by maintaining consistent input/output types throughout.
+- Version 4: Uses in-mapper combining to perform local aggregation, reducing the amount of intermediate data.
+
+2. **Pairs vs. Stripes**: These are two approaches for representing relationships between items, often used in co-occurrence problems.
+
+<MyTabs>
+  <Tab label="Pairs" />
+  <Tab label="Stripes" />
+
+  <TabPanel>
+    <Typography variant="h6" component="div">Pairs Approach</Typography>
+    
+    <Typography variant="body1" component="div">
+      The Pairs approach keeps track of each term co-occurrence separately.
+    </Typography>
+
+    <MyAlert severity="info" title="Key Characteristics">
+      <ul>
+        <li>Each mapper takes a sentence and generates all co-occurring term pairs</li>
+        <li>For all pairs, emit (a, b) → count</li>
+        <li>Reducers sum up counts associated with these pairs</li>
+        <li>Combiners can be used, but with limited benefit</li>
+      </ul>
+    </MyAlert>
+
+    <Typography variant="subtitle1" component="div">Pseudo-code:</Typography>
+    <CodeBlock>
+    {`
+    class MAPPER
+        method MAP(docid a, doc d)
+            for all term w ∈ doc d do
+                for all term u ∈ NEIGHBORS(w) do
+                EMIT(pair (w, u), count 1) ▷ Emit count for each co-occurrence
+
+    class REDUCER
+        method REDUCE(pair p, counts [c1, c2, ...])
+            s ← 0
+            for all count c ∈ counts [c1, c2, ...] do
+                s ← s + c ▷ Sum co-occurrence counts
+            EMIT(pair p, count s)
+
+`}
+
+</CodeBlock>
+    <MyAlert severity="warning" title="Drawbacks">
+      <ul>
+        <li>Generates a large number of key-value pairs</li>
+        <li>Limited benefit from combiners</li>
+        <li>More intermediate data to sort and shuffle</li>
+      </ul>
+    </MyAlert>
+
+  </TabPanel>
+
+  <TabPanel>
+    <Typography variant="h6" component="div">Stripes Approach</Typography>
+    
+    <Typography variant="body1" component="div">
+      The Stripes approach groups together pairs into an associative array, keeping track of all terms that co-occur with the same term.
+    </Typography>
+
+    <MyAlert severity="info" title="Key Characteristics">
+      <ul>
+        <li>Each mapper takes a sentence and generates an associative array for each term</li>
+        <li>For each term, emit a → \{ b: count_b, c: count_c, d: count_d ... \}</li>
+        <li>Reducers perform element-wise sum of associative arrays</li>
+        <li>Greatly benefits from combiners</li>
+      </ul>
+    </MyAlert>
+
+    <Typography variant="subtitle1" component="div">Pseudo-code:</Typography>
+    <CodeBlock>
+    {`
+    class MAPPER
+        method MAP(docid a, doc d)
+            for all term w ∈ doc d do
+            H ← new AssociativeArray
+            for all term u ∈ NEIGHBORS(w) do
+                H{u} ← H{u} + 1 ▷ Tally words co-occurring with w
+            EMIT(Term w, Stripe H)
+
+    class REDUCER
+        method REDUCE(term w, stripes [H1, H2, H3, ...])
+            Hf ← new AssociativeArray
+            for all stripe H ∈ stripes [H1, H2, H3, ...] do
+                SUM(Hf, H) ▷ Element-wise sum
+            EMIT(term w, stripe Hf)
+
+`}
+
+</CodeBlock>
+
+    <MyAlert severity="success" title="Advantages">
+      <ul>
+        <li>Generates fewer and shorter intermediate keys</li>
+        <li>Less sorting for the framework</li>
+        <li>More efficient use of combiners</li>
+        <li>Reduces overall data volume in the shuffle and sort phase</li>
+      </ul>
+    </MyAlert>
+
+    <MyAlert severity="warning" title="Potential Drawback">
+      <ul>
+        <li>May suffer from memory issues with very large vocabularies</li>
+      </ul>
+    </MyAlert>
+
+  </TabPanel>
+</MyTabs>
